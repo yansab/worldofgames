@@ -1,9 +1,11 @@
-import random
-import requests
 from guess_game import play_guess_game, input_validation
-from memory_game import play_memory_game, get_list_from_user
 from currency_roulette_game import play_currency_roulette_game
+from guess_game import play_guess_game, input_validation
+from main_score import score_server, insert_text_to_file
+from memory_game import play_memory_game, get_list_from_user
 from score import add_score
+from utils import screen_cleaner
+from flask_score import app
 
 
 def list_validate_length(user_list, difficulty):
@@ -15,6 +17,7 @@ def list_validate_length(user_list, difficulty):
 
 
 def welcome():
+    screen_cleaner()
     username = input('Hello, please enter your name: \n')
     print(f'Hi {username} and welcome to the World of Games: The Epic Journey \n')
 
@@ -48,3 +51,6 @@ def start_play():
         res = play_currency_roulette_game(int(game_level))
     if res:
         add_score(int(game_level))
+    content_html = score_server()
+    insert_text_to_file('index.html', content_html)
+    app.run(debug=True, use_reloader=False)  # calling the flask application

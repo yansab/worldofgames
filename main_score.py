@@ -6,6 +6,7 @@ from pathlib import Path
 def score_server():
     if not path.exists(scores_file_name):
         html_content = f"""
+            <!DOCTYPE html>
             <html>
                 <head>
                     <title>Scores Game</title>
@@ -21,6 +22,7 @@ def score_server():
         score = file.read()
         file.close()
         html_content = f"""
+                <!DOCTYPE html>
                 <html>
                     <head>
                         <title>Scores Game</title>
@@ -34,5 +36,8 @@ def score_server():
     return html_content
 
 
-html = score_server()
-print(html)
+def insert_text_to_file(file_path, text_to_insert):
+    with open(file_path, 'w') as file:
+        file.write(text_to_insert)
+        file.close()
+

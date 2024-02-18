@@ -40,10 +40,10 @@ def get_list_from_user(difficulty):
 def is_list_equal(ran_list, user_list):
     res = True
     if ran_list == user_list:
-        print("Well done, YOU WIN !! your memory is excellent, you've guess the same list of numbers -:)")
+        print("\nWell done, YOU WIN !! your memory is excellent, you've guess the same list of numbers -:)\n")
         res = True
     else:
-        print("Bad news, YOU LOSE !! your list of numbers doesn't match the random list, you may try again -:) \n")
+        print("\nBad news, YOU LOSE !! your list of numbers doesn't match the random list, you may try again -:) \n")
         res = False
     return res
 
@@ -51,7 +51,7 @@ def is_list_equal(ran_list, user_list):
 def play_memory_game(difficulty):
     print('''We are starting the Memory Game, it will be so fun :), Enjoy it.. \n 
 we will show you a list of random numbers for a short time, \n you will need to try remember it.. Good luck -:)\n''')
-    input('Click enter once you ready..\n')
+    input('\nClick enter once you ready..\n')
     ran_list = generate_sequence(difficulty)
     print(ran_list, end='')
     time.sleep(1)
@@ -59,9 +59,9 @@ we will show you a list of random numbers for a short time, \n you will need to 
         print(i, end='\r')
     user_list = get_list_from_user(difficulty)
     if is_list_equal(ran_list, user_list):
-        print(f'Random list is: {ran_list} and your list is {user_list} !!')
+        print(f'Random list is: {ran_list} and your list is {user_list} !!\n')
         res = True
     else:
-        print(f'Random list is: {ran_list} and your list is {user_list} !!')
+        print(f'Random list is: {ran_list} and your list is {user_list} !!\n')
         res = False
     return res

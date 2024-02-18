@@ -1,12 +1,14 @@
 import random
-from forex_python.converter import CurrencyRates
-from datetime import date
+import requests
 
 
 def get_money_interval(ran_num):
-    c = CurrencyRates()
-    exchange_date = date(2023, 2, 5)  # I couldn't find real exchange rate, so took a specific date in the past.
-    exchange_rate = c.get_rate('USD', 'ILS', exchange_date)
+    base_currency = 'USD'
+    target_currency = 'ILS'
+    api_url = f'https://open.er-api.com/v6/latest/{base_currency}'
+    response = requests.get(api_url)
+    data = response.json()
+    exchange_rate = data['rates'][target_currency]
     correct_value = exchange_rate * ran_num
     return correct_value
 

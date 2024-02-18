@@ -13,7 +13,7 @@ def input_validation(choose_num, range_numbers):
 
 
 def generate_number(difficulty):
-    return random.randrange(1, difficulty)
+    return random.randrange(0, difficulty)
 
 
 def get_guess_from_user(difficulty):
