@@ -25,7 +25,7 @@ def test_scores_service(app_url):
 
 def main_function():
     test_res = -1
-    res = test_scores_service('http://127.0.0.1:5000')
+    res = test_scores_service('http://127.0.0.1:8777')
     if res:
         test_res = 0
     return test_res
