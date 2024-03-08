@@ -1,6 +1,9 @@
 version: '3.1'
 services:
   world_of_games:
-    image: flaskwog:1.0.4
+    image: flaskwog:20
     ports:
-      - 5001:5000
+      - 8777:5000
+    volumes:
+      - /c/python_ws/World_of_Games/scores.txt:/app/scores.txt
+    container_name: flaskwog_container    
