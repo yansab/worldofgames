@@ -1,7 +1,13 @@
 properties([pipelineTriggers([pollSCM('30 * * * *')])])
 pipeline {
     agent any
-
+    
+    environment {
+        DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
+        DOCKER_FILE_PATH = "C:\\python_ws\\wog_jenkins\\worldofgames"
+        CONTAINER_NAME = "flaskwog-container"
+    }
+    
     stages {
         stage('Checkout') {
             steps {
@@ -16,24 +22,47 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo 'Build our application as Image Docker'
-                bat 'docker build -t flaskwog:1.0.4 . '
+               script {
+                    // Use DOCKER_IMAGE_TAG as the tag for the Docker image
+                    def image = "flaskwog:${DOCKER_IMAGE_TAG}"
+
+                    // Build the Docker image
+                    bat "cd ${DOCKER_FILE_PATH} && docker build -t ${image} ."
+
+                    // Check if the Docker image exists locally
+                    def imageBuildFailed = (bat(script: "echo %ERRORLEVEL%", returnStatus: true) != 0)
+                    
+                     if (imageBuildFailed) {
+                          error "Failed to build Docker image."
+                    } else {
+                          echo "Docker image exists: ${image}"
+                    }
+                }
             }
         }
         stage('Run') {
             steps {
-                echo 'Running our docker image expose port 8777'
+                script {
+                    echo 'Running our docker image expose port 8777'
+                    // Define port mapping
+                    def portMapping = "8777:5000"
+
+                    // Run the Docker container
+                    bat "docker run -d --name ${CONTAINER_NAME} -p ${portMapping} -v ${DOCKER_FILE_PATH}\\scores.txt:/app/scores.txt flaskwog:${DOCKER_IMAGE_TAG}"
+               }
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing our score web page and fail the pipline in case its failed'
-//                 bat 'C:\\Users\\yaniv\\AppData\\Local\\Programs\\Python\\Python39\\python.exe e2e.py'
+                echo 'Testing our new container of flaskwog image'
+                bat "cd ${DOCKER_FILE_PATH} && C:\\Users\\yaniv\\AppData\\local\\Programs\\Python\\Python39\\python.exe e2e.py"
             }
         }
         stage('Finalize') {
             steps {
                 echo 'Terminate our tested container & push new image to Docker Hub'
+                bat "docker tag flaskwog:${DOCKER_IMAGE_TAG} yanivsa/flaskwog:${DOCKER_IMAGE_TAG} && docker push yanivsa/flaskwog:${DOCKER_IMAGE_TAG} "
+                bat "docker kill ${CONTAINER_NAME} && docker rm ${CONTAINER_NAME} "
             }
         }
     }
